@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
@@ -18,15 +21,12 @@ import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.cloud.api.TrackInfo;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
 
 /**
  * 
  */
 @Component(name = "osgi.enroute.trains.track.manager",
-		provide={TrackForSegment.class, TrackForTrain.class, TrackInfo.class})
+		service={TrackForSegment.class, TrackForTrain.class, TrackInfo.class})
 public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	static Logger logger = LoggerFactory.getLogger(ExampleTrackManagerImpl.class);
 

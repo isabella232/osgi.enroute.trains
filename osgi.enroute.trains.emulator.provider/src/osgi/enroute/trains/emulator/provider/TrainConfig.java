@@ -1,7 +1,12 @@
 package osgi.enroute.trains.emulator.provider;
 
-public interface TrainConfig {
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
+@ObjectClassDefinition
+public @interface TrainConfig {
+	
 	String name();
 	
 	String rfid();
+	
 }

@@ -1,19 +1,20 @@
 package osgi.enroute.trains.train.manager.example.provider;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.train.api.TrainController;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
 
 /**
  * 
  */
 @Component(name = "osgi.enroute.trains.train.manager.example",
 	immediate=true,
-	provide=Object.class,
-	properties={"osgi.command.scope=trains","osgi.command.function=move"})
+	service=Object.class,
+	property={"osgi.command.scope=trains","osgi.command.function=move"})
 public class ExampleTrainManagerImpl {
 
 	private TrackForTrain trackManager;

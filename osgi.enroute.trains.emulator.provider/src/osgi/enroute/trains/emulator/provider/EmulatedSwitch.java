@@ -2,17 +2,18 @@ package osgi.enroute.trains.emulator.provider;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import osgi.enroute.trains.controller.api.SwitchSegmentController;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
 import aQute.lib.converter.Converter;
 
 @Component(name="osgi.enroute.trains.controller.switch",
-	designateFactory = ControllerConfig.class,
 	immediate=true)
+@Designate(ocd = ControllerConfig.class, factory=true)
 public class EmulatedSwitch implements SwitchSegmentController {
 	static Logger logger = LoggerFactory.getLogger(EmulatedSwitch.class);
 	

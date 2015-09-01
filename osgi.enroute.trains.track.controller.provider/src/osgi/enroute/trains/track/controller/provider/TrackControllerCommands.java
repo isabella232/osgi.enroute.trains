@@ -1,21 +1,21 @@
 package osgi.enroute.trains.track.controller.provider;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.trains.cloud.api.Color;
 import osgi.enroute.trains.cloud.api.Command;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
 import aQute.lib.converter.Converter;
 
 /**
  * Small component that offers GoGo commands that post Command
  * Events to EventAdmin to control (and test) the Track Controller
  */
-@Component(provide=Object.class,
-		properties={"osgi.command.scope=trains",
+@Component(service=Object.class,
+		property={"osgi.command.scope=trains",
 		"osgi.command.function=signal",
 		"osgi.command.function=swtch"})
 public class TrackControllerCommands {

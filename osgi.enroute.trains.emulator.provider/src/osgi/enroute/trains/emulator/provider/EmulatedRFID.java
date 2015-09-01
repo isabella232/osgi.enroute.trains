@@ -2,19 +2,20 @@ package osgi.enroute.trains.emulator.provider;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.Designate;
 import org.osgi.util.promise.Deferred;
 import org.osgi.util.promise.Promise;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import osgi.enroute.trains.controller.api.RFIDSegmentController;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
 import aQute.lib.converter.Converter;
 
 @Component(name="osgi.enroute.trains.controller.rfid",
-	designateFactory = ControllerConfig.class,
 	immediate=true)
+@Designate(ocd = ControllerConfig.class, factory=true)
 public class EmulatedRFID implements RFIDSegmentController, RFIDTrigger {
 	static Logger logger = LoggerFactory.getLogger(EmulatedRFID.class);
 	

@@ -6,14 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+
 import osgi.enroute.trains.cloud.api.Color;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.cloud.api.TrackInfo;
 import osgi.enroute.trains.controller.api.SegmentController;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Reference;
 
 /**
  * The emulator listens for trains moving and triggers Emulated RFIDS
@@ -180,7 +183,7 @@ public class Emulator {
 		this.track = track;
 	}
 	
-	@Reference(type='*')
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	public void addTrain(Train train){
 		TrainPosition pos = new TrainPosition();
 		// TODO what is the initial train position?
@@ -201,7 +204,7 @@ public class Emulator {
 		trains.remove(train);
 	}
 	
-	@Reference(type='*')
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
 	public void addRFIDTrigger(RFIDTrigger t, Map<String, Object> properties){
 		int id = Integer.parseInt((String)properties.get(SegmentController.CONTROLLER_ID));
 		rfids.put(id, t);

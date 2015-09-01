@@ -2,18 +2,19 @@ package osgi.enroute.trains.emulator.provider;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import osgi.enroute.trains.cloud.api.Color;
 import osgi.enroute.trains.controller.api.SignalSegmentController;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
 import aQute.lib.converter.Converter;
 
 @Component(name="osgi.enroute.trains.controller.signal",
-	designateFactory = ControllerConfig.class,
 	immediate=true)
+@Designate(ocd = ControllerConfig.class, factory=true)
 public class EmulatedSignal implements SignalSegmentController {
 	static Logger logger = LoggerFactory.getLogger(EmulatedSignal.class);
 	

@@ -2,17 +2,18 @@ package osgi.enroute.trains.emulator.provider;
 
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import osgi.enroute.trains.train.api.TrainController;
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
 import aQute.lib.converter.Converter;
 
 @Component(name="osgi.enroute.trains.train",
-	designateFactory = TrainConfig.class,
 	immediate=true)
+@Designate(ocd = TrainConfig.class, factory=true)
 public class EmulatedTrain implements TrainController, Train {
 	static Logger logger = LoggerFactory.getLogger(EmulatedTrain.class);
 

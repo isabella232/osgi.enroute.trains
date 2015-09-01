@@ -4,6 +4,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
@@ -18,15 +22,13 @@ import osgi.enroute.trains.controller.api.RFIDSegmentController;
 import osgi.enroute.trains.controller.api.SegmentController;
 import osgi.enroute.trains.controller.api.SignalSegmentController;
 import osgi.enroute.trains.controller.api.SwitchSegmentController;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Reference;
 
 /**
  * The TrackController listens for Command events and performs those on the
  * right Segment Controller
  */
 @Component(name = "osgi.enroute.trains.track.controller",
-        properties = { "event.topics=" + Command.TOPIC },
+        property = { "event.topics=" + Command.TOPIC },
         immediate = true)
 public class TrackControllerImpl implements EventHandler {
     static Logger logger = LoggerFactory.getLogger(TrackControllerImpl.class);
@@ -147,7 +149,7 @@ public class TrackControllerImpl implements EventHandler {
         }
     }
 
-    @Reference(type = '*')
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     public void addRFIDController(RFIDSegmentController c, Map<String, Object> properties) {
         int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
         rfids.put(id, c);
@@ -161,7 +163,7 @@ public class TrackControllerImpl implements EventHandler {
         rfids.remove(id);
     }
 
-    @Reference(type = '*')
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     public void addSignalController(SignalSegmentController c, Map<String, Object> properties) {
         int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
         signals.put(id, c);
@@ -172,7 +174,7 @@ public class TrackControllerImpl implements EventHandler {
         signals.remove(id);
     }
 
-    @Reference(type = '*')
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     public void addSwitchController(SwitchSegmentController c, Map<String, Object> properties) {
         int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
         switches.put(id, c);

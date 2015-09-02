@@ -55,7 +55,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		// segment A
 		Segment s1 = new Segment();
 		segments.put("A-1", s1);
-		s1.track = "A-1";
+		s1.track = "A";
 		s1.type = Segment.Type.CURVED;
 		s1.sequence = 1;
 		s1.length = 500;
@@ -66,7 +66,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		// signal A
 		Segment s2 = new Segment();
 		segments.put("A-2", s2);
-		s2.track = "A-2";
+		s2.track = "A";
 		s2.type = Segment.Type.SIGNAL;
 		s2.sequence = 2;
 		s2.length = 0;
@@ -88,7 +88,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		// segment B
 		Segment s4 = new Segment();
 		segments.put("B-1", s4);
-		s4.track = "B-1";
+		s4.track = "B";
 		s4.type = Segment.Type.STRAIGHT;
 		s4.sequence = 1;
 		s4.length = 500;
@@ -99,7 +99,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		// signal B
 		Segment s5 = new Segment();
 		segments.put("B-2", s5);
-		s5.track = "B-2";
+		s5.track = "B";
 		s5.type = Segment.Type.SIGNAL;
 		s5.sequence = 2;
 		s5.length = 0;
@@ -110,7 +110,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		// segment C
 		Segment s6 = new Segment();
 		segments.put("C-1", s6);
-		s6.track = "C-1";
+		s6.track = "C";
 		s6.type = Segment.Type.STRAIGHT;
 		s6.sequence = 1;
 		s6.length = 500;
@@ -121,7 +121,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		// signal C
 		Segment s7 = new Segment();
 		segments.put("C-2", s7);
-		s7.track = "C-2";
+		s7.track = "C";
 		s7.type = Segment.Type.SIGNAL;
 		s7.sequence = 2;
 		s7.length = 0;

@@ -9,7 +9,7 @@ import osgi.enroute.trains.track.util.Track.SegmentHandler;
 import osgi.enroute.trains.train.api.TrainController;
 
 public class TrainControllerImpl implements TrainController {
-	private double SPEED_CONSTANT = 0.1;
+	private double SPEED_CONSTANT = 0.01;
 
 	private double distance;
 	private int desiredSpeed;

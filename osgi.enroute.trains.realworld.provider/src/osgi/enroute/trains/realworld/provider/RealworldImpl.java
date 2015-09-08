@@ -64,7 +64,7 @@ public class RealworldImpl implements EventHandler {
 			trainControllerImpl.register(context);
 		}
 
-		trainTick = scheduler.schedule(this::tick, 100, 50);
+		trainTick = scheduler.schedule(this::tick, 100, 100);
 	}
 
 	@Deactivate

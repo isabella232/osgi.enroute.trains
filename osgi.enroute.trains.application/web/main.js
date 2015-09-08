@@ -43,17 +43,37 @@
 	});
 
 	MODULE.run(function($rootScope, $location, en$easse, en$jsonrpc) {
-
+		var track = {};
+		
 		$rootScope.alerts = alerts;
 		$rootScope.trains = trains;
+		$rootScope.track = track;
 
 		en$easse.handle("osgi/trains/*", function(e) {
 			$rootScope.$applyAsync(function() {
 				trains.events.push(e);
 				if ( trains.events.length > 10)
 					trains.events.splice(0,1);
-				if ( e.type == "LOCATED") {
+				switch(e.type) {
+				case "LOCATED":
 					trains.locations[e.train]=e.segment;
+					break;
+					
+				case "SWITCH": {
+						var s = track[ e.segment ];
+						if ( angular.isDefined(s) )
+							s.alt = e.alternate;
+					}
+					break;
+					
+				case "SIGNAL": {
+						var s = track[ e.segment ];
+						if ( angular.isDefined(s) )
+							s.color = e.signal;
+					}
+					break;
+					
+					
 				}
 			});
 		}, function(e) {
@@ -65,21 +85,8 @@
 
 		resolveBefore.trainsEndpoint().then(function(ep) {
 			trains.ep = ep;
-			ep.getSegments().then( function(d) {
-				for ( var k in d ) {
-					var seg = d[k];
-					seg.trains = [];
-					switch(seg.type) {
-					case "SIGNAL":
-						seg.signal = "red";
-						break;
-						
-					case "SWITCH":
-						seg.alternative = false;
-						break;
-					}
-				}
-				trains.segments = d;
+			trains.ep.getPositions().then( function(pos) {
+				angular.copy(pos, track);
 			});
 		});
 
@@ -93,6 +100,9 @@
 	});
 
 	var mainProvider = function($scope) {
+		trains.ep.getPositions().then( function(pos) {
+			$scope.positions = pos;
+		});
 	}
 
 })();

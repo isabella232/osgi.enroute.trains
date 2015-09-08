@@ -82,3 +82,8 @@ body {
     border-bottom: 0;
   }
 }
+
+.rails {
+	stroke: black;
+	stroke-width: 6px;
+}

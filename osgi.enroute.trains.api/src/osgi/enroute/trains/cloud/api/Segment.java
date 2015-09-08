@@ -11,8 +11,14 @@ import org.osgi.dto.DTO;
 public class Segment extends DTO {
 
 	public enum Type {
-		STRAIGHT, CURVED, SWITCH, SIGNAL, LOCATOR;
+		STRAIGHT, CURVED, SWITCH, SIGNAL, LOCATOR, BLOCK;
 	}
+	
+
+	/**
+	 * Our Identity
+	 */
+	public String id;
 	
 	/**
 	 * Type of the segment
@@ -56,8 +62,9 @@ public class Segment extends DTO {
 	public String to[];
 	
 	/**
-	 * The previous segment. Only a switch can have an additional to. The second to
+	 * The previous segment. Only a switch can have an additional from. The second from
 	 * is the one selected if the switch is set to its alternative.
 	 */
 	public String from[];
+
 }

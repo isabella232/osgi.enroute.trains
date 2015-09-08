@@ -11,8 +11,9 @@ Private-Package:  \
 	
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
-	biz.aQute.bndlib,\
-	osgi.enroute.trains.api;version=latest
+	osgi.enroute.trains.api;version=latest, \
+	osgi.enroute.trains.util;version=latest
+	
 
 -testpath: \
 	osgi.enroute.junit.wrapper
@@ -25,3 +26,4 @@ Private-Package:  \
 	
 -runbundles: \
 	${error;Resolve first}
+

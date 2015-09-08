@@ -5,8 +5,6 @@
 
 Bundle-Version:				1.0.0.${tstamp}
 Bundle-Description: 		This is OSGI ENROUTE TRAINS Train Controller project.
-Export-Package: \
-	osgi.enroute.trains.train.api;provide:=true
 Private-Package:  \
 	osgi.enroute.trains.train.controller.provider
 	

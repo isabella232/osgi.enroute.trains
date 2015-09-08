@@ -16,6 +16,7 @@ Conditional-Package: aQute.lib*
 -buildpath: \
 	osgi.enroute.base.api;version=1.0,\
 	biz.aQute.bndlib,\
+	osgi.enroute.trains.util;version=latest, \
 	osgi.enroute.trains.api;version=latest
 
 -testpath: \

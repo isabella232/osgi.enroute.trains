@@ -43,11 +43,6 @@ public class TrainControllerImpl implements TrainController {
 			if (current == null)
 				return;
 
-			if ( current.isBlocked()) {
-				//System.out.println("Blocked on " + current);
-				return;
-			}
-			
 			actualSpeed = desiredSpeed + (desiredSpeed - actualSpeed + 2) / 4;
 			distance += SPEED_CONSTANT * actualSpeed;
 

@@ -10,7 +10,7 @@ import aQute.bnd.osgi.Constants
 /* Add bnd gradle plugin as a script dependency */
 buildscript {
   repositories {
-    //jcenter()
+    jcenter()
     maven {
         url 'https://dl.bintray.com/bnd/snapshot'
     }

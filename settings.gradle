@@ -11,9 +11,6 @@ import aQute.bnd.osgi.Constants
 buildscript {
   repositories {
     jcenter()
-    maven {
-        url 'https://dl.bintray.com/bnd/snapshot'
-    }
   }
   dependencies {
     classpath bnd_plugin

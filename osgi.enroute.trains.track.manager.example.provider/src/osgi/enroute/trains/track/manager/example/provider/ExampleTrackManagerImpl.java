@@ -23,13 +23,13 @@ import org.slf4j.LoggerFactory;
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.scheduler.api.Scheduler;
 import osgi.enroute.trains.cloud.api.Color;
+import osgi.enroute.trains.cloud.api.Command;
 import osgi.enroute.trains.cloud.api.Observation;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.cloud.api.TrackConfiguration;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.cloud.api.TrackInfo;
-import osgi.enroute.trains.cloud.api.Observation.Type;
 import osgi.enroute.trains.track.util.Track;
 import osgi.enroute.trains.track.util.Track.LocatorHandler;
 import osgi.enroute.trains.track.util.Track.SegmentHandler;
@@ -95,13 +95,13 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 						signal.color = Color.RED;
 
 					if ( signal.color == Color.RED) {
-						setSignal(signal, Color.GREEN);
-						scheduler.after(()-> setSignal(signal,Color.YELLOW),8000);
-						scheduler.after(()-> setSignal(signal,Color.RED),12000);
+						setSignal(signal.segment.id, Color.GREEN);
+						scheduler.after(()-> setSignal(signal.segment.id,Color.YELLOW),8000);
+						scheduler.after(()-> setSignal(signal.segment.id,Color.RED),12000);
 					}
 				} else if ( sh instanceof Switch) {
 					SwitchHandler<Object> swtch = (SwitchHandler<Object>) sh;
-					setSwitch( swtch, !swtch.toAlternate );
+					doSwitch(swtch.segment.id);
 				}
 				return;
 			}
@@ -110,22 +110,19 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	}
 
 
-	private void setSignal(SignalHandler<Object> signal, Color color) {
-		signal.color = color;
-		Observation o = new Observation();
-		o.type=Type.SIGNAL;
-		o.segment = signal.segment.id;
-		o.signal = color;
-		event(o);
+	private void setSignal(String segmentId, Color color) {
+		Command c = new Command();
+		c.type=Command.Type.SIGNAL;
+		c.segment = segmentId;
+		c.signal = color;
+		command(c);
 	}
 
-	private void setSwitch(SwitchHandler<Object> swtch, boolean alt) {
-		swtch.toAlternate=alt;
-		Observation o = new Observation();
-		o.type=Type.SWITCH;
-		o.segment = swtch.segment.id;
-		o.alternate = alt;
-		event(o);
+	private void doSwitch(String segmentId) {
+		Command c = new Command();
+		c.type = Command.Type.SWITCH;
+		c.segment = segmentId;
+		command(c);
 	}
 
 
@@ -204,7 +201,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		signal.setColor(color);
 	}
 
-	void event(Observation o) {
+	void observation(Observation o) {
 		try {
 			o.time = System.currentTimeMillis();
 			synchronized(observations) {
@@ -218,6 +215,15 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		}
 	}
 
+	void command(Command c){
+		try {
+			Event event = new Event(Command.TOPIC, dtos.asMap(c));
+			ea.postEvent(event);
+		} catch (Exception e) {
+			logger.error("Error posting command " + c, e);
+		}
+	}
+	
 	@Override
 	public Set<String> getBlocked() {
 		// TODO Auto-generated method stub

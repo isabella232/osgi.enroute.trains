@@ -19,7 +19,8 @@ class Switch extends SwitchHandler<Object> {
 		Observation o = new Observation();
 		o.type = Observation.Type.SWITCH;
 		o.segment = segment.id;
-		owner.event(o);
+		o.alternate = toAlternate;
+		owner.observation(o);
 	}
 
 }

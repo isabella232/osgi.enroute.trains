@@ -21,7 +21,7 @@ class Signal extends SignalHandler<Object> {
 		o.type = Observation.Type.SIGNAL;
 		o.segment = segment.id;
 		o.signal = color;
-		owner.event(o);
+		owner.observation(o);
 		
 	}
 

@@ -74,9 +74,7 @@ public class TrackControllerImpl implements EventHandler {
             }
 
             controller.signal(color);
-
             trackManager.signal(s, color);
-            System.out.println("CHANGE " + s + " TO " + color);
             return;
         }
         case SWITCH: {
@@ -88,9 +86,7 @@ public class TrackControllerImpl implements EventHandler {
             }
 
             controller.swtch(!controller.getSwitch());
-
             trackManager.switched(s, controller.getSwitch());
-            System.out.println("SWITCH " + s);
             return;
         }
         }
@@ -104,10 +100,10 @@ public class TrackControllerImpl implements EventHandler {
                     rfidSegment = s;
                 }
             }
-
+            
             // track new rfid detections on this controller
             if (rfidSegment != null) {
-                String segment = rfidSegment.track + "-" + rfidSegment.sequence;
+                String segment = rfidSegment.id;
                 trackRFID(controller, segment);
             }
         }
@@ -151,7 +147,7 @@ public class TrackControllerImpl implements EventHandler {
 
 	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     public void addRFIDController(RFIDSegmentController c, Map<String, Object> properties) {
-        int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
+        int id = (Integer) properties.get(SegmentController.CONTROLLER_ID);
         rfids.put(id, c);
 
         // start tracking RFID notifications
@@ -159,29 +155,29 @@ public class TrackControllerImpl implements EventHandler {
     }
 
     public void removeRFIDController(RFIDSegmentController c, Map<String, Object> properties) {
-        int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
+        int id = (Integer) properties.get(SegmentController.CONTROLLER_ID);
         rfids.remove(id);
     }
 
 	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     public void addSignalController(SignalSegmentController c, Map<String, Object> properties) {
-        int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
+        int id = (Integer) properties.get(SegmentController.CONTROLLER_ID);
         signals.put(id, c);
     }
 
     public void removeSignalController(SignalSegmentController c, Map<String, Object> properties) {
-        int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
+        int id = (Integer) properties.get(SegmentController.CONTROLLER_ID);
         signals.remove(id);
     }
 
 	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policy=ReferencePolicy.DYNAMIC)
     public void addSwitchController(SwitchSegmentController c, Map<String, Object> properties) {
-        int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
+        int id = (Integer) properties.get(SegmentController.CONTROLLER_ID);
         switches.put(id, c);
     }
 
     public void removeSwitchController(SwitchSegmentController c, Map<String, Object> properties) {
-        int id = Integer.parseInt((String) properties.get(SegmentController.CONTROLLER_ID));
+        int id = (Integer) properties.get(SegmentController.CONTROLLER_ID);
         switches.remove(id);
     }
 }

@@ -11,25 +11,20 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.scheduler.api.Scheduler;
-import osgi.enroute.trains.cloud.api.Observation;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
-import osgi.enroute.trains.event.util.EventToObservation;
 import osgi.enroute.trains.track.util.Track;
 import osgi.enroute.trains.track.util.Track.SegmentHandler;
 
 /**
  * 
  */
-@Component(name = "osgi.enroute.trains.realworld", immediate = true, property=EventConstants.EVENT_TOPIC+"="+Observation.TOPIC)
-public class RealworldImpl implements EventHandler {
+@Component(name = "osgi.enroute.trains.realworld", immediate = true)
+public class RealworldImpl {
 
 	@Reference
 	private TrackForSegment trackForSegment;
@@ -81,19 +76,6 @@ public class RealworldImpl implements EventHandler {
 	void tick() throws Exception {
 		for (TrainControllerImpl tc : trainControllers)
 			tc.tick();
-	}
-
-	
-	@Override
-	public void handleEvent(Event event) {
-		try {
-			Observation observation = EventToObservation.eventToObservation(event, dtos);
-			track.event(observation);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 
 }

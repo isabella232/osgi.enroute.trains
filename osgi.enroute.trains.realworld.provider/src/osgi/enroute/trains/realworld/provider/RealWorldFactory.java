@@ -5,10 +5,13 @@ import java.util.Hashtable;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.util.promise.Deferred;
+import org.osgi.util.promise.Promise;
 
 import osgi.enroute.trains.cloud.api.Color;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
+import osgi.enroute.trains.controller.api.RFIDSegmentController;
 import osgi.enroute.trains.controller.api.SegmentController;
 import osgi.enroute.trains.controller.api.SignalSegmentController;
 import osgi.enroute.trains.controller.api.SwitchSegmentController;
@@ -168,7 +171,7 @@ public class RealWorldFactory extends SegmentFactoryAdapter<Traverse> {
 
 		@Override
 		public void signal(Color color) {
-
+			this.color = color;
 		}
 
 		@Override
@@ -180,6 +183,7 @@ public class RealWorldFactory extends SegmentFactoryAdapter<Traverse> {
 		public void close() throws IOException {
 			registration.unregister();
 		}
+		
 		@Override
 		public int l() {
 			return length();
@@ -190,34 +194,68 @@ public class RealWorldFactory extends SegmentFactoryAdapter<Traverse> {
 		}
 	}
 
-	class Locator extends LocatorHandler<Traverse>implements Traverse {
+	class Locator extends LocatorHandler<Traverse>implements Traverse, RFIDSegmentController {
 
+		private ServiceRegistration<RFIDSegmentController> registration;
+
+		private String lastRFID = null;
+		private Deferred<String> nextRFID = new Deferred<String>();
+		
 		public Locator(Segment segment) {
 			super(segment);
 		}
 
 		@Override
 		public Traverse next(String rfid) {
-			owner.locatedTrainAt(rfid, segment.id);
+			trigger(rfid);
 			return next.get();
 		}
 
 		@Override
 		public Traverse prev(String rfid) {
-			owner.locatedTrainAt(rfid, segment.id);
+			trigger(rfid);
 			return prev.get();
 		}
 
+		private synchronized void trigger(String rfid){
+			// first keep the old deferred we have to resolve
+			Deferred<String> toResolve = nextRFID;
+
+			// create new deferred for next, since we will call 
+			// a new nextRFID() when the previous is resolved
+			nextRFID = new Deferred<String>();
+			
+			// resolve previous
+			toResolve.resolve(rfid);
+			// set lastRFID
+			this.lastRFID = rfid;
+		}
+		
 		@Override
 		public void register(BundleContext context) {
+			Hashtable<String, Integer> map = new Hashtable<>();
+			map.put(SegmentController.CONTROLLER_ID, segment.controller);
+			registration = context.registerService(RFIDSegmentController.class, this, map);
 		}
 
 		@Override
 		public void close() throws IOException {
+			registration.unregister();
 		}
+		
 		@Override
 		public int l() {
 			return length();
+		}
+
+		@Override
+		public synchronized String lastRFID() {
+			return lastRFID;
+		}
+
+		@Override
+		public synchronized Promise<String> nextRFID() {
+			return nextRFID.getPromise();
 		}
 
 	}

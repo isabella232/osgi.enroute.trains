@@ -44,7 +44,7 @@ public class TrainsApplication implements JSONRPC {
 				sh.get().adjustWidth();
 			}
 			positions = Collections.unmodifiableMap(
-					track.getHandlers().stream().map(sh -> sh.get().getPosition()).collect(Collectors.toMap( p -> p.segment.id, p->p)));
+					track.getHandlers().stream().map(sh -> sh.get().getPosition()).collect(Collectors.toMap( p -> ((SegmentPosition)p).segment.id, p->p)));
 			
 			
 		} catch (Exception e) {

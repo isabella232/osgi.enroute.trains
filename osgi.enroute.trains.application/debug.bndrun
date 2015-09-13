@@ -40,6 +40,7 @@
 	osgi.enroute.scheduler.simple.provider;version='[1.1.1,1.1.2)',\
 	osgi.enroute.trains.application;version=snapshot,\
 	osgi.enroute.trains.realworld.provider;version=snapshot,\
+	osgi.enroute.trains.track.controller.provider;version=snapshot,\
 	osgi.enroute.trains.track.manager.example.provider;version=snapshot,\
 	osgi.enroute.trains.train.manager.example.provider;version=snapshot,\
 	osgi.enroute.trains.util;version=snapshot,\

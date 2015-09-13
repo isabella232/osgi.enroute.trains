@@ -49,7 +49,7 @@
 		$rootScope.trains = trains;
 		$rootScope.track = track;
 
-		en$easse.handle("osgi/trains/*", function(e) {
+		en$easse.handle("osgi/trains/observation", function(e) {
 			$rootScope.$applyAsync(function() {
 				trains.events.push(e);
 				if ( trains.events.length > 10)

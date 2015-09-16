@@ -49,8 +49,8 @@
 	        "B14        : CURVED     : 1      : -1     : B15",
 	        "B15        : CURVED     : 1      : -1     : B16",
 	        "B16        : CURVED     : 1      : -1     : B16_L",
-	        "B16_L      : LOCATOR    : 1      : -1     : B16_S",
-	        "B16_S      : SIGNAL     : 1      : -1     : X04",
+	        "B16_L      : LOCATOR    : 1      : 5      : B16_S",
+	        "B16_S      : SIGNAL     : 1      : 5      : X04",
 	        
 	        "C00        : CURVED     : 1      : -1     : C01",
 	        "C01        : CURVED     : 1      : -1     : C02",

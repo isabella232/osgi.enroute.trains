@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,17 +79,25 @@ public class Tracks<T> {
 		public boolean isPlain() {
 			return true;
 		}
+		
+		public boolean isLocator() {
+			return false;
+		}
+		
+		public boolean isSignal(){
+			return false;
+		}
 
-		public List<SegmentHandler<T>> findForward(SegmentHandler<T> destination) {
-			List<SegmentHandler<T>> route = new ArrayList<>();
+		public LinkedList<SegmentHandler<T>> findForward(SegmentHandler<T> destination) {
+			LinkedList<SegmentHandler<T>> route = new LinkedList<>();
 			if (find(route, destination, true))
 				return route;
 			else
 				return null;
 		}
 
-		public List<SegmentHandler<T>> findBackward(SegmentHandler<T> destination) {
-			List<SegmentHandler<T>> route = new ArrayList<>();
+		public LinkedList<SegmentHandler<T>> findBackward(SegmentHandler<T> destination) {
+			LinkedList<SegmentHandler<T>> route = new LinkedList<>();
 			if (find(route, destination, false))
 				return route;
 			else
@@ -258,6 +267,10 @@ public class Tracks<T> {
 		public void setSignal(Color signal) {
 			this.color = signal;
 		}
+		
+		public boolean isSignal(){
+			return true;
+		}
 	}
 
 	public static class LocatorHandler<T> extends SegmentHandler<T> {
@@ -281,6 +294,10 @@ public class Tracks<T> {
 
 		public void setTrain(String rfid) {
 			this.lastSeenId = rfid;
+		}
+		
+		public boolean isLocator() {
+			return true;
 		}
 	}
 
@@ -402,10 +419,19 @@ public class Tracks<T> {
 	}
 
 	private SegmentHandler<T> link(SegmentHandler<T> current, String nextId) {
-
+		
 		boolean alternate = nextId.endsWith("!");
 		if (alternate) {
 			nextId = nextId.substring(0, nextId.length() - 1);
+		}
+		
+		// additional check in case created from a bunch of Segments and no ! is available
+		if(handlers.get(nextId).segment.from!=null){
+			if(handlers.get(nextId).segment.from.length==2){
+				if(handlers.get(nextId).segment.from[1].equals(current.segment.id)){
+					alternate = true;
+				}
+			}
 		}
 
 		SegmentHandler<T> next = handlers.get(nextId);

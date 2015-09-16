@@ -1,7 +1,7 @@
 package osgi.enroute.trains.track.util;
 
 import osgi.enroute.trains.cloud.api.Segment;
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 
 public class SegmentFactoryAdapter<T> implements SegmentFactory<T> {
 
@@ -36,27 +36,27 @@ public class SegmentFactoryAdapter<T> implements SegmentFactory<T> {
 	}
 
 	public SegmentHandler<T> block(Segment segment) {
-		return new Track.BlockHandler<T>(segment);
+		return new Tracks.BlockHandler<T>(segment);
 	}
 
 	public SegmentHandler<T> curve(Segment segment) {
-		return new Track.CurvedHandler<T>(segment);
+		return new Tracks.CurvedHandler<T>(segment);
 	}
 
 	public SegmentHandler<T> straight(Segment segment) {
-		return new Track.StraightHandler<T>(segment);
+		return new Tracks.StraightHandler<T>(segment);
 	}
 
 	public SegmentHandler<T> signal(Segment segment) {
-		return new Track.SignalHandler<T>(segment);
+		return new Tracks.SignalHandler<T>(segment);
 	}
 
 	public SegmentHandler<T> locator(Segment segment) {
-		return new Track.LocatorHandler<T>(segment);
+		return new Tracks.LocatorHandler<T>(segment);
 	}
 
 	public SegmentHandler<T> swtch(Segment segment) {
-		return new Track.SwitchHandler<T>(segment);
+		return new Tracks.SwitchHandler<T>(segment);
 	}
 
 }

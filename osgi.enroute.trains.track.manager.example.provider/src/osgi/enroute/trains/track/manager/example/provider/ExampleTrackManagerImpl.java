@@ -30,11 +30,11 @@ import osgi.enroute.trains.cloud.api.TrackConfiguration;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.cloud.api.TrackInfo;
-import osgi.enroute.trains.track.util.Track;
-import osgi.enroute.trains.track.util.Track.LocatorHandler;
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
-import osgi.enroute.trains.track.util.Track.SignalHandler;
-import osgi.enroute.trains.track.util.Track.SwitchHandler;
+import osgi.enroute.trains.track.util.Tracks;
+import osgi.enroute.trains.track.util.Tracks.LocatorHandler;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks.SignalHandler;
+import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
 
 /**
  * 
@@ -56,13 +56,13 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	@Reference
 	private Scheduler scheduler;
 
-	private Track<Object> track;
+	private Tracks<Object> track;
 	private int offset;
 	private Closeable ticker;
 
 	@Activate
 	public void activate(TrackConfiguration config) throws Exception{
-		track = new Track<Object>(config.segments(), new TrackManagerFactory(this));
+		track = new Tracks<Object>(config.segments(), new TrackManagerFactory(this));
 		
 		for ( String train : config.trains()) {
 			String parts[] = train.split("\\s*:\\s*");

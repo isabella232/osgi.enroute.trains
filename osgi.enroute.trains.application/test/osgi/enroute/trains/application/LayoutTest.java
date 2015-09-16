@@ -3,13 +3,13 @@ package osgi.enroute.trains.application;
 import aQute.lib.io.IO;
 import junit.framework.TestCase;
 import osgi.enroute.trains.application.LayoutAdapter.Layout;
-import osgi.enroute.trains.track.util.Track;
+import osgi.enroute.trains.track.util.Tracks;
 
 public class LayoutTest extends TestCase {
 
 	public void testLayout() throws Exception {
 		String plan = IO.collect(LayoutTest.class.getResource("simple.txt"));
-		Track<Layout> track = new Track<>(plan, new LayoutAdapter());
+		Tracks<Layout> track = new Tracks<>(plan, new LayoutAdapter());
 		track.getRoot().get().layout(0, 0, null);
 		
 		assertEquals( "A00", track.getHandler("A00").segment.id);

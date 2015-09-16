@@ -2,7 +2,7 @@ package osgi.enroute.trains.track.manager.example.provider;
 
 import osgi.enroute.trains.cloud.api.Observation;
 import osgi.enroute.trains.cloud.api.Segment;
-import osgi.enroute.trains.track.util.Track.SwitchHandler;
+import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
 
 class Switch extends SwitchHandler<Object> {
 

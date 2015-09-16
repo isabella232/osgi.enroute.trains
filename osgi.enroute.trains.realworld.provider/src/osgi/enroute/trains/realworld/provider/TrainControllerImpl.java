@@ -5,7 +5,7 @@ import java.util.Dictionary;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 import osgi.enroute.trains.train.api.TrainController;
 
 public class TrainControllerImpl implements TrainController {

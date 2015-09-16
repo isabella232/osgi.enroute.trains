@@ -33,7 +33,7 @@ import osgi.enroute.trains.cloud.api.TrackConfiguration;
  *            {@link SegmentHandler} so that you can for example use the graph
  *            to layout or do something else
  */
-public class Track<T> {
+public class Tracks<T> {
 	final Map<String, SegmentHandler<T>> handlers = new HashMap<>();
 	final Map<String, Segment> segments = new HashMap<>();
 
@@ -61,6 +61,10 @@ public class Track<T> {
 		@Override
 		public String toString() {
 			return segment.id;
+		}
+		
+		public String getTrack(){
+			return segment.track;
 		}
 
 		public boolean isMerge() {
@@ -300,15 +304,15 @@ public class Track<T> {
 
 	}
 
-	public Track(String[] segments, SegmentFactory<T> factory) throws Exception {
+	public Tracks(String[] segments, SegmentFactory<T> factory) throws Exception {
 		this(parse(segments), factory);
 	}
 
-	public Track(Map<String, Object> config, SegmentFactory<T> factory) throws Exception {
+	public Tracks(Map<String, Object> config, SegmentFactory<T> factory) throws Exception {
 		this(parse((String[]) config.get("segments")), factory);
 	}
 
-	public Track(String plan, SegmentFactory<T> factory) throws Exception {
+	public Tracks(String plan, SegmentFactory<T> factory) throws Exception {
 		this(parse(plan), factory);
 	}
 
@@ -350,7 +354,7 @@ public class Track<T> {
 		return segment;
 	}
 
-	public Track(Collection<? extends Segment> segments, SegmentFactory<T> factory) throws Exception {
+	public Tracks(Collection<? extends Segment> segments, SegmentFactory<T> factory) throws Exception {
 		index(segments);
 		build(segments, factory);
 		link();
@@ -373,7 +377,7 @@ public class Track<T> {
 	private void link() throws Exception {
 		for (SegmentHandler<T> segmentHandler : handlers.values()) {
 
-			if (segmentHandler instanceof Track.BlockHandler)
+			if (segmentHandler instanceof Tracks.BlockHandler)
 				continue;
 
 			Segment segment = segmentHandler.segment;
@@ -387,7 +391,7 @@ public class Track<T> {
 
 			if (to.length == 2) {
 
-				if (!(segmentHandler instanceof Track.SwitchHandler))
+				if (!(segmentHandler instanceof Tracks.SwitchHandler))
 					throw new IllegalArgumentException("Multiple 'to' specified but not a Switch " + segment.id);
 
 				SwitchHandler<T> s = (SwitchHandler<T>) segmentHandler;
@@ -411,7 +415,7 @@ public class Track<T> {
 
 		if (alternate) {
 
-			if (!(next instanceof Track.SwitchHandler))
+			if (!(next instanceof Tracks.SwitchHandler))
 				throw new IllegalArgumentException(
 						"Invalid reference to switch alternate and next is not a switch, from: " + current.segment.id
 								+ " to " + next.segment);

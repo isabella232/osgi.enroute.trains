@@ -17,8 +17,8 @@ import osgi.enroute.dto.api.DTOs;
 import osgi.enroute.scheduler.api.Scheduler;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
-import osgi.enroute.trains.track.util.Track;
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class RealworldImpl {
 	private DTOs dtos;
 
 	private List<TrainControllerImpl> trainControllers = new ArrayList<>();
-	private Track<Traverse> track;
+	private Tracks<Traverse> track;
 	private Closeable trainTick;
 	private Closeable poll;
 	private List<String> trains;
@@ -49,7 +49,7 @@ public class RealworldImpl {
 	void activate(Config config, BundleContext context) throws Exception {
 		trains = Arrays.asList(config.trains());
 
-		track = new Track<Traverse>(trackForTrain.getSegments().values(), new RealWorldFactory(trackForSegment));
+		track = new Tracks<Traverse>(trackForTrain.getSegments().values(), new RealWorldFactory(trackForSegment));
 
 		track.getHandlers().forEach(sh -> sh.get().register(context));
 

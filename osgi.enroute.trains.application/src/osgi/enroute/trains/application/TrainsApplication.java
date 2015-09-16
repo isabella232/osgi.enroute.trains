@@ -16,8 +16,8 @@ import osgi.enroute.jsonrpc.api.RequireJsonrpcWebResource;
 import osgi.enroute.trains.application.LayoutAdapter.Layout;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.cloud.api.TrackInfo;
-import osgi.enroute.trains.track.util.Track;
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 import osgi.enroute.twitter.bootstrap.capabilities.RequireBootstrapWebResource;
 import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
 
@@ -32,13 +32,13 @@ public class TrainsApplication implements JSONRPC {
 
 	@Reference
 	private TrackInfo ti;
-	private Track<Layout> track;
+	private Tracks<Layout> track;
 	private Map<String,SegmentPosition> positions;
 
 	@Activate
 	void activate() throws Exception {
 		try {
-			track = new Track<>(ti.getSegments().values(), new LayoutAdapter());
+			track = new Tracks<>(ti.getSegments().values(), new LayoutAdapter());
 			track.getRoot().get().layout(0, 0, null);
 			for ( SegmentHandler<Layout> sh : track.getHandlers()) {
 				sh.get().adjustWidth();

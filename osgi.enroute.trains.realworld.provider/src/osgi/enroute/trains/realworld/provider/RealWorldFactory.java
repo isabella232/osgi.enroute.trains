@@ -16,10 +16,10 @@ import osgi.enroute.trains.controller.api.SegmentController;
 import osgi.enroute.trains.controller.api.SignalSegmentController;
 import osgi.enroute.trains.controller.api.SwitchSegmentController;
 import osgi.enroute.trains.track.util.SegmentFactoryAdapter;
-import osgi.enroute.trains.track.util.Track.LocatorHandler;
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
-import osgi.enroute.trains.track.util.Track.SignalHandler;
-import osgi.enroute.trains.track.util.Track.SwitchHandler;
+import osgi.enroute.trains.track.util.Tracks.LocatorHandler;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks.SignalHandler;
+import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
 
 public class RealWorldFactory extends SegmentFactoryAdapter<Traverse> {
 	final TrackForSegment owner;

@@ -9,24 +9,24 @@ import aQute.lib.io.IO;
 import aQute.lib.json.JSONCodec;
 import junit.framework.TestCase;
 import osgi.enroute.trains.cloud.api.Segment;
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
-import osgi.enroute.trains.track.util.Track.SwitchHandler;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
 
 public class TrackTest extends TestCase {
 
 	public void testSimple() throws Exception {
 		String plan = IO.collect(TrackTest.class.getResourceAsStream("track-simple.txt"));
-		Track<Object> track = new Track<Object>(plan, new SegmentFactoryAdapter<Object>());
+		Tracks<Object> track = new Tracks<Object>(plan, new SegmentFactoryAdapter<Object>());
 		assertTrack(track, 20);
 	}
 
 	public void testMain() throws Exception {
 		String plan = IO.collect(TrackTest.class.getResourceAsStream("track-main.txt"));
-		Track<Object> track = new Track<Object>(plan, new SegmentFactoryAdapter<Object>());
+		Tracks<Object> track = new Tracks<Object>(plan, new SegmentFactoryAdapter<Object>());
 		assertTrack(track, 76);
 	}
 
-	private <T> void assertTrack(Track<T> track, int expectedSize) {
+	private <T> void assertTrack(Tracks<T> track, int expectedSize) {
 
 		for (SegmentHandler<T> a : track.getHandlers()) {
 			for (SegmentHandler<T> b : track.getHandlers()) {
@@ -82,16 +82,16 @@ public class TrackTest extends TestCase {
 
 	public void testTrackConfiguration() throws Exception {
 		String plan = IO.collect(TrackTest.class.getResourceAsStream("track-main.txt"));
-		Track<Object> track = new Track<Object>(plan, new SegmentFactoryAdapter<Object>());
+		Tracks<Object> track = new Tracks<Object>(plan, new SegmentFactoryAdapter<Object>());
 		Map<String, Object> configuration = track.toConfiguration("blabla");
 
-		Track<Object> other = new Track<Object>(configuration, new SegmentFactoryAdapter<Object>());
+		Tracks<Object> other = new Tracks<Object>(configuration, new SegmentFactoryAdapter<Object>());
 
 		assertSameTrack(track, other);
 
 	}
 
-	private <T> void assertSameTrack(Track<T> a, Track<T> b) {
+	private <T> void assertSameTrack(Tracks<T> a, Tracks<T> b) {
 		Set<SegmentHandler<T>> ahs = new HashSet<>(a.getHandlers());
 		Set<SegmentHandler<T>> bhs = new HashSet<>(b.getHandlers());
 		assertEquals("Must have the same number of elements ", ahs.size(), bhs.size());
@@ -115,7 +115,7 @@ public class TrackTest extends TestCase {
 
 	public void testGenerateJSON() throws Exception {
 		String plan = IO.collect(TrackTest.class.getResourceAsStream("track-main.txt"));
-		Track<Object> track = new Track<Object>(plan, new SegmentFactoryAdapter<Object>());
+		Tracks<Object> track = new Tracks<Object>(plan, new SegmentFactoryAdapter<Object>());
 
 		String json = new JSONCodec().enc().indent("  ").put(track.getConfigurationDTO("main")).toString();
 		assertNotNull(json);

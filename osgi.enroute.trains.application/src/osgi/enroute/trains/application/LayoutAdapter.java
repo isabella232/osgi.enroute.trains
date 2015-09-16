@@ -5,8 +5,8 @@ import static java.lang.Math.max;
 import osgi.enroute.trains.application.SegmentPosition.Symbol;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.track.util.SegmentFactoryAdapter;
-import osgi.enroute.trains.track.util.Track;
-import osgi.enroute.trains.track.util.Track.SegmentHandler;
+import osgi.enroute.trains.track.util.Tracks;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 
 public class LayoutAdapter extends SegmentFactoryAdapter<LayoutAdapter.Layout> {
 
@@ -24,7 +24,7 @@ public class LayoutAdapter extends SegmentFactoryAdapter<LayoutAdapter.Layout> {
 		}
 	}
 
-	class Switch extends Track.SwitchHandler<Layout>implements Layout {
+	class Switch extends Tracks.SwitchHandler<Layout>implements Layout {
 		final SegmentPosition segmentPosition;
 
 		public Switch(Segment segment) {
@@ -71,7 +71,7 @@ public class LayoutAdapter extends SegmentFactoryAdapter<LayoutAdapter.Layout> {
 
 	}
 
-	class Intermediate extends Track.StraightHandler<Layout>implements Layout {
+	class Intermediate extends Tracks.StraightHandler<Layout>implements Layout {
 		final SegmentPosition segmentPosition;
 		final int width;
 		
@@ -108,7 +108,7 @@ public class LayoutAdapter extends SegmentFactoryAdapter<LayoutAdapter.Layout> {
 
 	}
 
-	class Block extends Track.StraightHandler<Layout>implements Layout {
+	class Block extends Tracks.StraightHandler<Layout>implements Layout {
 		final SegmentPosition segmentPosition;
 		boolean done;
 

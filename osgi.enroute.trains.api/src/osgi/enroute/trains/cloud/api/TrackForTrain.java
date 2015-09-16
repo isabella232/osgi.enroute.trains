@@ -21,13 +21,6 @@ public interface TrackForTrain extends TrackInfo {
 	boolean requestAccessTo(String train, String fromSegment, String toSegment);
 
 	/**
-	 * Release the last granted segment
-	 * 
-	 * @param train
-	 */
-	void release(String train);
-
-	/**
 	 * Tell the track about this train
 	 * 
 	 * @param id

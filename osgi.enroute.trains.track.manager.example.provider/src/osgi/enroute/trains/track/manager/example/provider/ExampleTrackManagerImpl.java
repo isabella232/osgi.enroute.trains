@@ -169,12 +169,6 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	}
 
 	@Override
-	public void release(String train) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void registerTrain(String id, String type) {
 		System.out.println("Train " + id + " online!");
 	}

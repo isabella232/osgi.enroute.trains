@@ -68,5 +68,5 @@ public interface TrackInfo {
 	 * @param train
 	 * @return
 	 */
-	String getDestination(String train);
+	String getAssignment(String train);
 }

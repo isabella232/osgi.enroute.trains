@@ -157,7 +157,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	}
 
 	@Override
-	public String getDestination(String train) {
+	public String getAssignment(String train) {
 		// TODO Auto-generated method stub
 		return null;
 	}

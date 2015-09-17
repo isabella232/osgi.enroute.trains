@@ -23,7 +23,7 @@
   A16_S    : SIGNAL          : 0      : 1          : A16_L
   A16_L    : LOCATOR         : 0      : 1          : X01
   
-  X01      : SWITCH          : 1      : -1         : C00, B00
+  X01      : SWITCH          : 1      : -1         : B00, C00
   
   B00      : CURVED          : 1      : -1         : B01
   B01      : CURVED          : 1      : -1         : B02

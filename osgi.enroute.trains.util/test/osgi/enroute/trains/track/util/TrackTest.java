@@ -1,5 +1,6 @@
 package osgi.enroute.trains.track.util;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Set;
 
 import aQute.lib.io.IO;
 import aQute.lib.json.JSONCodec;
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
@@ -23,7 +25,15 @@ public class TrackTest extends TestCase {
 	public void testMain() throws Exception {
 		String plan = IO.collect(TrackTest.class.getResourceAsStream("track-main.txt"));
 		Tracks<Object> track = new Tracks<Object>(plan, new SegmentFactoryAdapter<Object>());
-		assertTrack(track, 76);
+		//assertTrack(track, 76);
+		assertRoute(track.getHandler("A09_L"), track.getHandler("E06_L"));
+	}
+	
+	public void testRoute() throws Exception {
+		String plan = IO.collect(TrackTest.class.getResourceAsStream("track-main.txt"));
+		Tracks<Object> track = new Tracks<Object>(plan, new SegmentFactoryAdapter<Object>());
+		String route = Arrays.toString(track.getHandler("A09_L").findForward(track.getHandler("E06_L")).toArray());
+		assertEquals("[A09_L, A10, A11, A12, A13, A14, A15, A16, A16_S, A16_L, X01, C00, C01, C02, C03, C04, C05, C05_S, C05_L, X02, E00, E01, E02, E03, E04, E05, E06, E06_L]",route);
 	}
 
 	private <T> void assertTrack(Tracks<T> track, int expectedSize) {

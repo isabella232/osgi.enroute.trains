@@ -91,7 +91,7 @@ public class Tracks<T> {
 		public LinkedList<SegmentHandler<T>> findForward(SegmentHandler<T> destination) {
 			LinkedList<SegmentHandler<T>> route = new LinkedList<>();
 			if (find(route, destination, true))
-				return route;
+				return new LinkedList<SegmentHandler<T>>(route);
 			else
 				return null;
 		}
@@ -99,20 +99,21 @@ public class Tracks<T> {
 		public LinkedList<SegmentHandler<T>> findBackward(SegmentHandler<T> destination) {
 			LinkedList<SegmentHandler<T>> route = new LinkedList<>();
 			if (find(route, destination, false))
-				return route;
+				return new LinkedList<SegmentHandler<T>>(route);
 			else
 				return null;
 		}
 
 		boolean find(List<SegmentHandler<T>> route, SegmentHandler<T> destination, boolean forward) {
-
-			if (route.contains(this))
+			if (route.contains(this)){
 				return false;
+			}
 
 			route.add(this);
 
-			if (this == destination)
+			if (this == destination){
 				return true;
+			}
 
 			Collection<SegmentHandler<T>> choices = move(forward);
 
@@ -124,8 +125,11 @@ public class Tracks<T> {
 			for (SegmentHandler<T> choice : choices) {
 				if (choice.find(route, destination, forward))
 					return true;
+					
 
-				route.subList(marker, route.size());
+				while(route.size() > marker){
+					route.remove(marker);
+				}
 			}
 
 			return false;

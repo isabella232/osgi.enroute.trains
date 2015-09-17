@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
@@ -13,15 +14,16 @@ import osgi.enroute.trains.cloud.api.Observation;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.track.util.Tracks;
 import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
+import osgi.enroute.trains.train.api.TrainConfiguration;
 import osgi.enroute.trains.train.api.TrainController;
 
 /**
  * 
  */
-@Component(name = "osgi.enroute.trains.train.manager.example",
+@Component(name = TrainConfiguration.TRAIN_CONFIGURATION_PID,
+	configurationPolicy = ConfigurationPolicy.REQUIRE,
 	immediate=true,
-	service=Object.class,
-	property={"osgi.command.scope=trains","osgi.command.function=move"})
+	service=Object.class)
 public class ExampleTrainManagerImpl {
 
 	private TrackForTrain trackManager;
@@ -34,13 +36,11 @@ public class ExampleTrainManagerImpl {
 	private Thread mgmtThread;
 	
 	@Activate
-	public void activate() throws Exception {
-		// TODO where does the TrainManager get his name from?
-		//name = "T1";
-		name = "rfid1234";
+	public void activate(TrainConfiguration config) throws Exception {
+		name = config.name();
 		
 		// register train with Track Manager
-		trackManager.registerTrain(name, "Train");
+		trackManager.registerTrain(name, config.rfid());
 		// create Track
 		tracks = new Tracks<Object>(trackManager.getSegments().values(), new TrainManagerFactory());
 

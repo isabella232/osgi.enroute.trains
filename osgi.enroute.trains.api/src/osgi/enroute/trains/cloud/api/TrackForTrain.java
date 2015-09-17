@@ -23,8 +23,10 @@ public interface TrackForTrain extends TrackInfo {
 	/**
 	 * Tell the track about this train
 	 * 
-	 * @param id
-	 * @param type
-	 */
-	void registerTrain(String id, String type);
+	 * @param name
+	 * 			the train name
+	 * @param rfid
+	 * 			the train rfid
+	 */ 
+	void registerTrain(String name, String rfid);
 }

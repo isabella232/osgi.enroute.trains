@@ -73,13 +73,6 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	@Activate
 	public void activate(TrackConfiguration config) throws Exception{
 		tracks = new Tracks<Object>(config.segments(), new TrackManagerFactory(this));
-		
-		for ( String train : config.trains()) {
-			String parts[] = train.split("\\s*:\\s*");
-			if ( parts.length != 2)
-				throw new IllegalArgumentException("Invalid train name, must be <rfid>:<name>");
-			trains.put(parts[0], parts[1]);
-		}
 	}
 	
 	@Deactivate
@@ -105,12 +98,16 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	public void setAssignment(String train, String segmentId){
 		SegmentHandler sh = tracks.getHandler(segmentId);
 		if(sh==null){
-			System.out.println("No valid segment id given");
+			System.out.println("No valid segment id given.");
 			return;
 		}
 		if(!sh.isLocator()){
-			System.out.println("Only locator segments can be used for assignments");
+			System.out.println("Only locator segments can be used for assignments.");
 			return;
+		}
+		if(!getTrains().contains(train)){
+			System.out.println("Train "+train+" is not registered.");
+			return;	
 		}
 
 		assignments.put(train, segmentId);
@@ -285,8 +282,9 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	}
 
 	@Override
-	public void registerTrain(String id, String type) {
-		System.out.println("Train " + id + " online!");
+	public void registerTrain(String name, String rfid) {
+		System.out.println("Train " + name + " online!");
+		trains.put(rfid, name);
 	}
 
 	@Override
@@ -296,7 +294,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 			throw new IllegalArgumentException("Unknown train for rfid " + rfid);
 
 		Locator handler = tracks.getHandler(Locator.class, segment);
-		handler.locatedAt(rfid);
+		handler.locatedAt(train);
 		
 		releasePreviousTrack(train, tracks.getHandler(segment).getTrack());
 	}

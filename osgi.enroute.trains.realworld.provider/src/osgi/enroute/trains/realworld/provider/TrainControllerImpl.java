@@ -1,6 +1,7 @@
 package osgi.enroute.trains.realworld.provider;
 
 import java.util.Dictionary;
+import java.util.Hashtable;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -67,6 +68,8 @@ public class TrainControllerImpl implements TrainController {
 	}
 
 	public void register(BundleContext context) {
-		registration = context.registerService(TrainController.class, this, null);
+		Dictionary<String, Object> properties = new Hashtable<String, Object>();
+		properties.put("train.rfid", rfid);
+		registration = context.registerService(TrainController.class, this, properties);
 	}
 }

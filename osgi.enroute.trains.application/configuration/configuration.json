@@ -4,9 +4,14 @@
 	    "trains":[ "rfid1234" ]
 	},
 	{
+	    "service.pid":"osgi.enroute.trains.train.manager",
+	    "name": "DemoTrain",
+	    "rfid": "rfid1234",
+	    "target.TrainController" : "train.rfid=rfid1234"
+	},	
+	{
 	    "service.pid":"osgi.enroute.trains.track.manager",
 	    "name": "main",
-	    "trains":[ "rfid1234:T1", "rfid5678:T2" ],
 	    "segments": [
 	        "A00        : CURVED     : 1      : -1     : A01",
 	        "A01        : CURVED     : 1      : -1     : A02",

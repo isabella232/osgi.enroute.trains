@@ -36,7 +36,6 @@ public class TrainControllerImpl implements TrainController {
 
 	@Override
 	public void light(boolean on) {
-		System.out.println("Light " + rfid + " " + on);
 	}
 
 	void tick() {

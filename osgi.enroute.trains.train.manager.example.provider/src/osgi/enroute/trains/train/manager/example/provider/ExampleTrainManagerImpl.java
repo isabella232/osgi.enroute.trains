@@ -9,6 +9,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import osgi.enroute.trains.cloud.api.Observation;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
@@ -25,6 +27,7 @@ import osgi.enroute.trains.train.api.TrainController;
 	immediate=true,
 	service=Object.class)
 public class ExampleTrainManagerImpl {
+	static Logger logger = LoggerFactory.getLogger(ExampleTrainManagerImpl.class);
 
 	private TrackForTrain trackManager;
 	private TrainController train;
@@ -104,7 +107,7 @@ public class ExampleTrainManagerImpl {
 					case ASSIGNMENT:
 						currentAssignment = o.assignment;
 						// new assignment, plan and follow the route
-						System.out.println(name+ " gets new assignment "+o.assignment);
+						logger.info(name+ " gets new assignment "+o.assignment);
 						planRoute();
 						followRoute();
 						break;
@@ -172,7 +175,7 @@ public class ExampleTrainManagerImpl {
 				boolean access = false;
 				// simply keep on trying until access is given
 				while(!access && active){
-					System.out.println(name+" requests access from track "+fromTrack+" to "+toTrack);
+					logger.info(name+" requests access from track "+fromTrack+" to "+toTrack);
 					access = trackManager.requestAccessTo(name, fromTrack, toTrack);
 				}
 			} 
@@ -184,9 +187,9 @@ public class ExampleTrainManagerImpl {
 		private boolean assignmentReached(){
 			if(currentAssignment==null || currentAssignment.equals(currentLocation)){
 				if(currentAssignment!=null){
-					System.out.println(name+" has reached assignment "+currentAssignment);
+					logger.info(name+" has reached assignment "+currentAssignment);
 				} else {
-					System.out.println(name+" is waiting for an assignment");
+					logger.info(name+" is waiting for an assignment");
 				}
 				return true;
 			}

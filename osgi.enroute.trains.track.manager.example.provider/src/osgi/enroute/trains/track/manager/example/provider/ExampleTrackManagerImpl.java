@@ -43,7 +43,7 @@ import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
 @Component(name = TrackConfiguration.TRACK_CONFIGURATION_PID, 
 		service = { TrackForSegment.class, TrackForTrain.class,TrackInfo.class, Object.class },
 		property={"osgi.command.scope=trains",
-		"osgi.command.function=setAssignment"})
+		"osgi.command.function=assign"})
 public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	static Logger logger = LoggerFactory.getLogger(ExampleTrackManagerImpl.class);
 	static Random random = new Random();
@@ -95,18 +95,18 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		command(c);
 	}
 
-	public void setAssignment(String train, String segmentId){
+	public void assign(String train, String segmentId){
 		SegmentHandler sh = tracks.getHandler(segmentId);
 		if(sh==null){
-			System.out.println("No valid segment id given.");
+			logger.error("No valid segment id given.");
 			return;
 		}
 		if(!sh.isLocator()){
-			System.out.println("Only locator segments can be used for assignments.");
+			logger.error("Only locator segments can be used for assignments.");
 			return;
 		}
 		if(!getTrains().contains(train)){
-			System.out.println("Train "+train+" is not registered.");
+			logger.error("Train "+train+" is not registered.");
 			return;	
 		}
 
@@ -283,7 +283,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 
 	@Override
 	public void registerTrain(String name, String rfid) {
-		System.out.println("Train " + name + " online!");
+		logger.info("Train " + name + " with rfid "+rfid+ " registered");
 		trains.put(rfid, name);
 	}
 

@@ -10,16 +10,30 @@
 			stroke-width:		4;
 			fill:				none;
 		}
-	</style>
+		
+		.GREEN {
+			fill: lightgreen;
+			stroke: black;
+		}
+		.RED {
+			fill: red;
+			stroke: black;
+		}
+		.YELLOW {
+			fill: orange;
+			stroke: black;
+		}
+	</style>	
+	
 	{{
 		w=16;
-		h=80;
+		h=90;
 		w2=w/2;
 		h2=h/2;
 		railsw=10;
 		;""
 	}}
-	<svg style="height:400px;width:100%"]">
+	<svg style="height:350px;width:100%"]">
 
 		<g ng-repeat="p in track" class={{p.segment.id}}>
 			{{
@@ -28,8 +42,7 @@
 				l = p.width * w;
 			;""
 			}}
-			
-			<g ng-switch=p.symbol ng:attr:transform="translate({{x}},{{y+100}})">
+			<g ng-switch=p.symbol ng:attr:transform="translate({{x}},{{y+30}})">
 				<path ng:attr:d="M 0 0 l{{l}} 0" class=rails></path>
 				
 				
@@ -43,18 +56,29 @@
 					<path d="M 0 -5 l 5 5 l -5 5" class=arrow ng-show=!p.alt></path>
 					<path d="M 5 15 l 5 -5 l 5 5" class=arrow ng-show=p.alt></path>
 				</g>
+			</g>
+		</g>
+		<g ng-repeat="p in track" class={{p.segment.id}}>
+			{{
+				x = p.x * w;
+				y = p.y * h + h;
+				l = p.width * w;
+			;""
+			}}
+			
+			<g ng-switch=p.symbol ng:attr:transform="translate({{x}},{{y+30}})">
 				<g ng-switch-when=SIGNAL>
-					<circle cx=-1 cy=10 r=4  style="stroke:black;stroke-width:1px;fill:{{p.color}}"></circle>
+					<circle cx=0 cy=0 r=5  style="stroke:black;stroke-width:1px;" class={{p.color}}></circle>
 				</g>
 				<g ng-switch-when=LOCATOR>
-					<rect x=-4 y=-13 width=7 height=7  style="stroke:black;stroke-width:1px;fill:lightblue"></rect>
+					<path d="M 0 -14 l 0 10 m 0 -5 l 4 -4 m -4 4 l -4 -4" stroke-width=1 stroke=black></path>
 					<g ng-repeat="(train,seg) in trains.locations" >
 						<text text-anchor=middle x=0 y=-18 fill="black" ng-show=seg==p.segment.id style="font-size:0.9em">{{train}}</text>
 					</g>
 				</g>
 				
 				<g ng-show=p.title>
-					<circle cx=10 cy=0 r=8 fill=white stroke=black stroke-width=2></circle>
+					<circle cx=10 cy=0 r=9 fill=white stroke=black stroke-width=2></circle>
 					<text text-anchor=middle x=10 y=4 fill="black" style="font-size:0.7em" ng-show=p.title>{{p.title}}</text>
 				</g>
 			</g>

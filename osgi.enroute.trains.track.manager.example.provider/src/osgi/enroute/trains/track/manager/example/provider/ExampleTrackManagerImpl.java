@@ -102,14 +102,17 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	public void assign(String train, String segmentId){
 		SegmentHandler sh = tracks.getHandler(segmentId);
 		if(sh==null){
+			System.out.println("No valid segment id given.");
 			logger.error("No valid segment id given.");
 			return;
 		}
 		if(!sh.isLocator()){
+			System.out.println("Only locator segments can be used for assignments.");
 			logger.error("Only locator segments can be used for assignments.");
 			return;
 		}
 		if(!getTrains().contains(train)){
+			System.out.println("Train "+train+" is not registered.");
 			logger.error("Train "+train+" is not registered.");
 			return;	
 		}

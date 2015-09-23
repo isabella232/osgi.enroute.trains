@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +32,7 @@ import osgi.enroute.trains.cloud.api.TrackConfiguration;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.cloud.api.TrackInfo;
+import osgi.enroute.trains.cloud.api.Observation.Type;
 import osgi.enroute.trains.track.util.Tracks;
 import osgi.enroute.trains.track.util.Tracks.LocatorHandler;
 import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
@@ -55,6 +57,8 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	private Map<String, String> assignments = new HashMap<String, String>();
 	// track access track->train
 	private Map<String, String> access = new HashMap<String, String>();
+	// blocked segments
+	private Set<String> blocked = new HashSet<String>();
 	
 	static final int TIMEOUT = 60000;
 
@@ -118,7 +122,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		o.assignment = segmentId;
 		observation(o);
 	}
-
+	
 	@Override
 	public Map<String, Segment> getSegments() {
 		return tracks.getSegments();
@@ -170,11 +174,11 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	public boolean requestAccessTo(String train, String fromTrack, String toTrack) {
 		long start = System.currentTimeMillis();
 		boolean granted = false;
-		
+		System.out.println("TRAIN "+train+" requests access to "+toTrack);
 		while(!granted && System.currentTimeMillis()-start < TIMEOUT){
 			synchronized(access){
-				// TODO check if blocked?
-				if(access.get(toTrack)==null || access.get(toTrack).equals(train)){
+				if(!isBlocked(toTrack)
+						&& (access.get(toTrack)==null || access.get(toTrack).equals(train))){
 					// assign track to this train
 					access.put(toTrack, train);
 
@@ -249,6 +253,16 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		}
 		
 		return !switchOK;
+	}
+	
+	// check if any of the blocked segments is on this track
+	private boolean isBlocked(String track){
+		for(String s : blocked){
+			if(tracks.getHandler(s).getTrack().equals(track)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Optional<SwitchHandler> getSwitch(String fromTrack, String toTrack){
@@ -345,13 +359,23 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	
 	@Override
 	public Set<String> getBlocked() {
-		// TODO Auto-generated method stub
-		return null;
+		return blocked;
 	}
 
 	@Override
-	public void blocked(String segment, String reason, boolean blocked) {
-		// TODO Auto-generated method stub
-
+	public void blocked(String segment, String reason, boolean b) {
+		synchronized(access){
+			if(b){
+				blocked.add(segment);
+			} else {
+				blocked.remove(segment);
+			}
+			access.notifyAll();
+		}
+		Observation o = new Observation();
+		o.type = Type.BLOCKED;
+		o.segment = segment;
+		o.blocked = b;
+		observation(o);
 	}
 }

@@ -27,7 +27,7 @@ public class Observation extends DTO {
 		 */
 		SWITCH,
 		/**
-		 * A train is blocked 
+		 * A segment is blocked 
 		 */
 		BLOCKED,
 		/**

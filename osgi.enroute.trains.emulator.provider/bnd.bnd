@@ -12,7 +12,7 @@ Export-Package: \
 	osgi.enroute.trains.train.api
 	
 Private-Package:  \
-	osgi.enroute.trains.realworld.provider
+	osgi.enroute.trains.emulator.provider
 
 Provide-Capability: \
 	osgi.service; objectClass=osgi.enroute.trains.train.api.TrainController;effective:=active, \

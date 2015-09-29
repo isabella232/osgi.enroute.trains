@@ -1,4 +1,4 @@
-package osgi.enroute.trains.realworld.provider;
+package osgi.enroute.trains.emulator.provider;
 
 import java.util.Dictionary;
 import java.util.Hashtable;

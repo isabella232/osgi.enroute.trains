@@ -1,4 +1,4 @@
-package osgi.enroute.trains.realworld.provider;
+package osgi.enroute.trains.emulator.provider;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -24,7 +24,7 @@ import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
  * 
  */
 @Component(name = "osgi.enroute.trains.realworld", immediate = true)
-public class RealworldImpl {
+public class EmulatorImpl {
 
 	@Reference
 	private TrackForSegment trackForSegment;
@@ -49,7 +49,7 @@ public class RealworldImpl {
 	void activate(Config config, BundleContext context) throws Exception {
 		trains = Arrays.asList(config.trains());
 
-		track = new Tracks<Traverse>(trackForTrain.getSegments().values(), new RealWorldFactory(trackForSegment));
+		track = new Tracks<Traverse>(trackForTrain.getSegments().values(), new EmulatorFactory(trackForSegment));
 
 		track.getHandlers().forEach(sh -> sh.get().register(context));
 

@@ -1,4 +1,4 @@
-package osgi.enroute.trains.realworld.provider;
+package osgi.enroute.trains.emulator.provider;
 
 import java.io.IOException;
 import java.util.Hashtable;
@@ -21,7 +21,7 @@ import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 import osgi.enroute.trains.track.util.Tracks.SignalHandler;
 import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
 
-public class RealWorldFactory extends SegmentFactoryAdapter<Traverse> {
+public class EmulatorFactory extends SegmentFactoryAdapter<Traverse> {
 	final TrackForSegment owner;
 
 	class Block extends SegmentHandler<Traverse>implements Traverse {
@@ -260,7 +260,7 @@ public class RealWorldFactory extends SegmentFactoryAdapter<Traverse> {
 
 	}
 	
-	public RealWorldFactory(TrackForSegment owner) {
+	public EmulatorFactory(TrackForSegment owner) {
 		this.owner = owner;
 	}
 

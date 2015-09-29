@@ -79,7 +79,7 @@ public class ExampleTrainManagerImpl {
 
 		private String currentAssignment = null;
 		private String currentLocation = null;
-		private LinkedList<SegmentHandler> route = null;
+		private LinkedList<SegmentHandler<Object>> route = null;
 		
 		@Override
 		public void run() {
@@ -127,6 +127,18 @@ public class ExampleTrainManagerImpl {
 							followRoute();
 						}
 						break;
+					case BLOCKED:
+						break;
+					case CHANGE:
+						break;
+					case SIGNAL:
+						break;
+					case SWITCH:
+						break;
+					case TIMEOUT:
+						break;
+					default:
+						break;
 					}
 				}
 			}
@@ -140,8 +152,8 @@ public class ExampleTrainManagerImpl {
 				return;
 			
 			// plan the route
-			SegmentHandler src = tracks.getHandler(currentLocation);
-			SegmentHandler dest = tracks.getHandler(currentAssignment);
+			SegmentHandler<Object> src = tracks.getHandler(currentLocation);
+			SegmentHandler<Object> dest = tracks.getHandler(currentAssignment);
 			route = src.findForward(dest);
 		}
 		
@@ -151,14 +163,14 @@ public class ExampleTrainManagerImpl {
 			
 			// update the remaining part of the current route
 			while(route.size() > 0 && !route.getFirst().segment.id.equals(currentLocation)){
-				SegmentHandler sh = route.removeFirst();
+				route.removeFirst();
 			}
 			
 			// figure out where to go to next
 			String fromTrack = route.removeFirst().getTrack();
 			
 			// check if we have to go to a new track before we have a new Locator
-			Optional<SegmentHandler> nextLocator = route.stream().filter(sh -> sh.isLocator()).findFirst();
+			Optional<SegmentHandler<Object>> nextLocator = route.stream().filter(sh -> sh.isLocator()).findFirst();
 			if(!nextLocator.isPresent()){
 				// no locator to go to, stop now
 				train.move(0);

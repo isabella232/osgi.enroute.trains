@@ -1,5 +1,6 @@
 package osgi.enroute.trains.track.util;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import osgi.enroute.dto.api.TypeReference;
 import osgi.enroute.trains.cloud.api.Color;
 import osgi.enroute.trains.cloud.api.Observation;
 import osgi.enroute.trains.cloud.api.Segment;
@@ -543,8 +545,12 @@ public class Tracks<T> {
 		return Collections.unmodifiableMap(segments);
 	}
 
-	public <Y> Stream<Y> filter(Class<Y> clazz) {
-		return handlers.values().stream().filter(h -> clazz.isInstance(h)).map(h -> clazz.cast(h));
+	public <Y extends SegmentHandler<T>> Stream<Y> filter(TypeReference<Y> tref) {
+		ParameterizedType type = (ParameterizedType) tref.getType();
+		Class<?> clazz = (Class<?>) type.getRawType();
+		@SuppressWarnings("unchecked")
+		Stream<Y> map = handlers.values().stream().filter(h -> clazz.isInstance(h)).map(h -> (Y) clazz.cast(h));
+		return map;
 	}
 
 	public <Y extends SegmentHandler<T>> Y getHandler(Class<Y> clazz, String id) {

@@ -3,7 +3,6 @@ package osgi.enroute.trains.track.manager.example.provider;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,16 +22,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import osgi.enroute.dto.api.DTOs;
+import osgi.enroute.dto.api.TypeReference;
 import osgi.enroute.scheduler.api.Scheduler;
 import osgi.enroute.trains.cloud.api.Color;
 import osgi.enroute.trains.cloud.api.Command;
 import osgi.enroute.trains.cloud.api.Observation;
+import osgi.enroute.trains.cloud.api.Observation.Type;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.cloud.api.TrackConfiguration;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.cloud.api.TrackInfo;
-import osgi.enroute.trains.cloud.api.Observation.Type;
 import osgi.enroute.trains.track.util.Tracks;
 import osgi.enroute.trains.track.util.Tracks.LocatorHandler;
 import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
@@ -100,7 +100,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	}
 
 	public void assign(String train, String segmentId){
-		SegmentHandler sh = tracks.getHandler(segmentId);
+		SegmentHandler<Object> sh = tracks.getHandler(segmentId);
 		if(sh==null){
 			System.out.println("No valid segment id given.");
 			logger.error("No valid segment id given.");
@@ -138,17 +138,17 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 
 	@Override
 	public Map<String, Color> getSignals() {
-		return tracks.filter(SignalHandler.class).collect(Collectors.toMap( sh -> sh.segment.id, sh -> sh.color));
+		return tracks.filter(new TypeReference<SignalHandler<Object>>(){}).collect(Collectors.toMap( sh -> sh.segment.id, sh -> sh.color));
 	}
 
 	@Override
 	public Map<String, Boolean> getSwitches() {
-		return tracks.filter(SwitchHandler.class).collect(Collectors.toMap( sh -> sh.segment.id, sh -> sh.toAlternate));
+		return tracks.filter(new TypeReference<SwitchHandler<Object>>(){}).collect(Collectors.toMap( sh -> sh.segment.id, sh -> sh.toAlternate));
 	}
 
 	@Override
 	public Map<String, String> getLocators() {
-		return tracks.filter(LocatorHandler.class).collect(Collectors.toMap( lh -> lh.segment.id, lh -> lh.lastSeenId));
+		return tracks.filter(new TypeReference<LocatorHandler<Object>>() {}).collect(Collectors.toMap( lh -> lh.segment.id, lh -> lh.lastSeenId));
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 					access.put(toTrack, train);
 
 					// check if switch is ok
-					Optional<SwitchHandler> swtch = getSwitch(fromTrack, toTrack);
+					Optional<SwitchHandler<Object>> swtch = getSwitch(fromTrack, toTrack);
 					if(shouldSwitch(getSwitch(fromTrack, toTrack), fromTrack, toTrack)){
 						doSwitch(swtch.get().segment.id);
 					} else {
@@ -213,7 +213,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	}
 
 	// set the signal to green for 10 seconds
-	private void greenSignal(Optional<SignalHandler> signal){
+	private void greenSignal(Optional<SignalHandler<Object>> signal){
 		if(signal.isPresent()){
 			setSignal(signal.get().segment.id, Color.GREEN);
 			scheduler.after(()-> setSignal(signal.get().segment.id,Color.YELLOW),10000);
@@ -222,12 +222,12 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	}
 	
 	// checks whether the switch is in the right state to go from fromTrack to toTrack
-	private boolean shouldSwitch(Optional<SwitchHandler> swtch, String fromTrack, String toTrack){
+	private boolean shouldSwitch(Optional<SwitchHandler<Object>> swtch, String fromTrack, String toTrack){
 		if(!swtch.isPresent()){
 			logger.debug("No switch between "+fromTrack+" and "+toTrack);
 			return true;
 		}
-		SwitchHandler s = swtch.get();
+		SwitchHandler<Object> s = swtch.get();
 		
 		// check (and set) signal and switch
 		boolean switchOK = true;
@@ -268,8 +268,8 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		return false;
 	}
 
-	private Optional<SwitchHandler> getSwitch(String fromTrack, String toTrack){
-		return tracks.filter(SwitchHandler.class)
+	private Optional<SwitchHandler<Object>> getSwitch(String fromTrack, String toTrack){
+		return tracks.filter(new TypeReference<SwitchHandler<Object>>(){})
 				.filter(sh -> sh.prev.getTrack().equals(fromTrack)
 								|| (sh.altPrev!=null 
 									 && sh.altPrev.getTrack().equals(fromTrack)))
@@ -278,8 +278,8 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 								     && sh.altNext.getTrack().equals(toTrack))).findFirst();
 	}
 	
-	private Optional<SignalHandler> getSignal(String fromTrack){
-		return tracks.filter(SignalHandler.class)
+	private Optional<SignalHandler<Object>> getSignal(String fromTrack){
+		return tracks.filter(new TypeReference<SignalHandler<Object>>(){})
 				.filter(sh -> sh.getTrack().equals(fromTrack))
 				.findFirst();
 	}

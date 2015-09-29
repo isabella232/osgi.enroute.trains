@@ -8,7 +8,6 @@ import java.util.Set;
 
 import aQute.lib.io.IO;
 import aQute.lib.json.JSONCodec;
-import junit.framework.Assert;
 import junit.framework.TestCase;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.track.util.Tracks.SegmentHandler;

@@ -14,7 +14,7 @@ JPMCommand:					trains
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.trains.application)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.trains.track.manager.example.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.trains.train.manager.example.provider)',\
-	osgi.identity;filter:='(osgi.identity=osgi.enroute.trains.realworld.provider)',\
+	osgi.identity;filter:='(osgi.identity=osgi.enroute.trains.emulator.provider)',\
 	osgi.identity;filter:='(osgi.identity=osgi.enroute.trains.track.controller.provider)'
 -runbundles: \
 	biz.aQute.bndlib;version='[3.0.0,3.0.1)',\

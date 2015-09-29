@@ -1,6 +1,7 @@
 package osgi.enroute.trains.application;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -13,9 +14,10 @@ import osgi.enroute.eventadminserversentevents.capabilities.RequireEventAdminSer
 import osgi.enroute.google.angular.capabilities.RequireAngularWebResource;
 import osgi.enroute.jsonrpc.api.JSONRPC;
 import osgi.enroute.jsonrpc.api.RequireJsonrpcWebResource;
+import osgi.enroute.stackexchange.pagedown.capabilities.RequirePagedownWebResource;
 import osgi.enroute.trains.application.LayoutAdapter.Layout;
 import osgi.enroute.trains.cloud.api.Segment;
-import osgi.enroute.trains.cloud.api.TrackInfo;
+import osgi.enroute.trains.cloud.api.TrackForCommand;
 import osgi.enroute.trains.track.util.Tracks;
 import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 import osgi.enroute.twitter.bootstrap.capabilities.RequireBootstrapWebResource;
@@ -27,11 +29,14 @@ import osgi.enroute.webserver.capabilities.RequireWebServerExtender;
 @RequireConfigurerExtender
 @RequireEventAdminServerSentEventsWebResource
 @RequireJsonrpcWebResource
+@RequirePagedownWebResource(resource="enmarkdown.js")
 @Component(name = "osgi.enroute.trains", property = JSONRPC.ENDPOINT + "=trains")
 public class TrainsApplication implements JSONRPC {
 
 	@Reference
-	private TrackInfo ti;
+	private TrackForCommand ti;
+
+	
 	private Tracks<Layout> track;
 	private Map<String,SegmentPosition> positions;
 
@@ -57,9 +62,20 @@ public class TrainsApplication implements JSONRPC {
 		return ti.getSegments();
 	}
 
+	public List<String> getTrains() {
+		security();
+		return ti.getTrains();
+	}
+	
+	public void assign(String train, String segment) {
+		security();
+		ti.assign(train, segment);;
+	}
+	
 	public Map<String,SegmentPosition> getPositions() {
 		return positions;
 	}
+	
 
 	private void security() {
 		// TODO Auto-generated method stub

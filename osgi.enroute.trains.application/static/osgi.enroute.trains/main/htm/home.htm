@@ -23,10 +23,15 @@
 			fill: orange;
 			stroke: black;
 		}
+		
+		.arrived {
+			background-color: #EEF5F7;
+			border-radius: 2px;
+		}
 	</style>	
 	
 	{{
-		w=16;
+		w=15;
 		h=90;
 		w2=w/2;
 		h2=h/2;
@@ -68,29 +73,58 @@
 			
 			<g ng-switch=p.symbol ng:attr:transform="translate({{x}},{{y+30}})">
 				<g ng-switch-when=SIGNAL>
-					<circle cx=0 cy=0 r=5  style="stroke:black;stroke-width:1px;" class={{p.color}}></circle>
+					<circle cx=0 cy=0 r=7  style="stroke:black;stroke-width:1px;" class={{p.color}}></circle>
 				</g>
 				<g ng-switch-when=LOCATOR>
-					<path d="M 0 -14 l 0 10 m 0 -5 l 4 -4 m -4 4 l -4 -4" stroke-width=1 stroke=black></path>
+					<path d="M 0 -18 l 0 17 m 0 -10 l 6 -6 m -6 6 l -6 -6" stroke-width=1 stroke=black></path>
 					<g ng-repeat="(train,seg) in trains.locations" >
-						<text text-anchor=middle x=0 y=-18 fill="black" ng-show=seg==p.segment.id style="font-size:0.9em">{{train}}</text>
+						<text text-anchor=middle x=0 y=-20 fill="black" ng-show=seg==p.segment.id style="font-size:0.9em;fill:darkred;">{{train}}</text>
 					</g>
+					<title>{{p.segment.id}}</title>
 				</g>
 				
 				<g ng-show=p.title>
 					<circle cx=10 cy=0 r=9 fill=white stroke=black stroke-width=2></circle>
 					<text text-anchor=middle x=10 y=4 fill="black" style="font-size:0.7em" ng-show=p.title>{{p.title}}</text>
 				</g>
+				
+				<g ng-repeat="t in trains.rfids" ng-show="t.segment==p.segment.id">
+					<path d="M -6 15 l 5 -5 l 5 5 l -10 0"  style="stroke:black;stroke-width:1px;fill:orange"></path>
+				</g>
 			</g>
 		</g>
 	</svg>
-	
-	
+	<div class=row>
+		<div class="col-lg-12">
+			<h2>Trains</h2>
+			<table class="table table-small">
+				<colgroup>
+					<col style="width:20%">
+					<col style="width:20%">
+					<col style="width:20%">
+					<col style="width:20%">
+				</colgroup>
+				<tbody>
+					<tr ng-repeat='t in trains.rfids' class="{{t.assignment.startsWith(t.segment)?'arrived':'chase'}}">
+						<td>{{t.train}}</td>
+						<td>{{t.segment}}</td>
+						<td>{{t.speed}}</td>
+						<td>
+							<select ng-model=t.assignment  ng-change=assign(t.train,t.assignment)>
+								<option  ng-repeat="o in trains.destinations track by $index" value={{o}}>{{o}}</option>
+							</select>
+						</td>
+					</tr>
+				</tbody>			
+			</table>
+		</div>		
+	</div>	
 	<div class=row>
 		<div class="col-lg-12">
 			<h2>Events</h2>
 			<table class="table table-small">
 				<colgroup>
+					<col style="">
 					<col style="">
 					<col style="">
 					<col style="">
@@ -106,13 +140,14 @@
 						<th>Message</th>
 						<th>Segment</th>
 						<th>Train</th>
-						<th>Alternative</th>
+						<th>Alt</th>
 						<th>Blocked</th>
-						<th>Assignment</th>
+						<th>Assign</th>
 						<th>Signal</th>
+						<th>Speed</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody style="font-size:smaller">
 					<tr ng-repeat='e in trains.events.slice().reverse()'>
 						<td>{{e.type}}</td>
 						<td>{{e.message}}</td>
@@ -122,6 +157,7 @@
 						<td>{{e.blocked}}</td>
 						<td>{{e.assignment}}</td>
 						<td>{{e.signal}}</td>
+						<td>{{e.speed}}</td>
 					</tr>
 				</tbody>
 			</table>

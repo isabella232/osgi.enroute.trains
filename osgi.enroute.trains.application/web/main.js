@@ -3,7 +3,7 @@
 (function() {
 
 	var MODULE = angular.module('osgi.enroute.trains', [ 'ngRoute',
-			'ngResource', 'enJsonrpc', 'enEasse' ]);
+			'ngResource', 'enJsonrpc', 'enEasse', 'enMarkdown' ]);
 
 	var resolveBefore;
 	var alerts = [];
@@ -11,7 +11,9 @@
 		events : [],
 		segments : {},
 		locations: {},
-		ep : null
+		rfids: {},
+		ep : null,
+		destinations : []
 	};
 
 	function error(msg) {
@@ -54,6 +56,15 @@
 				trains.events.push(e);
 				if ( trains.events.length > 10)
 					trains.events.splice(0,1);
+					
+				if ( e.train  ) {
+					var set = trains.rfids[ e.train ] || {};
+					set.train = e.train;
+					set.segment= e.segment;
+					set.speed=  e.speed;
+					trains.rfids[ e.train ] = set;
+				}
+				
 				switch(e.type) {
 				case "LOCATED":
 					trains.locations[e.train]=e.segment;
@@ -71,6 +82,10 @@
 						if ( angular.isDefined(s) )
 							s.color = e.signal;
 					}
+				case "ASSIGNMENT": {
+						if ( trains.rfids[ e.train ] )
+							trains.rfids[ e.train  ].assignment = e.assignment;
+					}
 					break;
 					
 					
@@ -87,6 +102,18 @@
 			trains.ep = ep;
 			trains.ep.getPositions().then( function(pos) {
 				angular.copy(pos, track);
+				for ( var i in track ) {
+					var s = track[i];
+					if ( s.segment.type == 'LOCATOR' ) {
+						trains.destinations.push( i );
+					}
+				}
+			});
+			
+			trains.ep.getTrains().then( function(t) {
+				t.forEach( function(d) {
+					trains.rfids[d] = { train: d };
+				});
 			});
 		});
 
@@ -100,9 +127,7 @@
 	});
 
 	var mainProvider = function($scope) {
-		trains.ep.getPositions().then( function(pos) {
-			$scope.positions = pos;
-		});
+		$scope.assign = trains.ep.assign;
 	}
 
 })();

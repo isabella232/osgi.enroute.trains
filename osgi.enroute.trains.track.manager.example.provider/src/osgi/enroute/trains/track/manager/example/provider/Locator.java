@@ -18,7 +18,7 @@ class Locator extends LocatorHandler<Object> {
 		Observation observation = new Observation();
 		observation.type = Observation.Type.LOCATED;
 		observation.segment = segment.id;
-		observation.train = rfid;
+		observation.train = owner.getNameForRfid(rfid);
 		owner.observation(observation);
 	}
 

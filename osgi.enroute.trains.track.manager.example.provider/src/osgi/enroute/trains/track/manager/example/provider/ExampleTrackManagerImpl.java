@@ -30,6 +30,7 @@ import osgi.enroute.trains.cloud.api.Observation;
 import osgi.enroute.trains.cloud.api.Observation.Type;
 import osgi.enroute.trains.cloud.api.Segment;
 import osgi.enroute.trains.cloud.api.TrackConfiguration;
+import osgi.enroute.trains.cloud.api.TrackForCommand;
 import osgi.enroute.trains.cloud.api.TrackForSegment;
 import osgi.enroute.trains.cloud.api.TrackForTrain;
 import osgi.enroute.trains.cloud.api.TrackInfo;
@@ -43,14 +44,15 @@ import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
  * 
  */
 @Component(name = TrackConfiguration.TRACK_CONFIGURATION_PID, 
-		service = { TrackForSegment.class, TrackForTrain.class,TrackInfo.class, Object.class },
+		service = { TrackForSegment.class, TrackForTrain.class,TrackInfo.class, TrackForCommand.class, Object.class },
 		property={"osgi.command.scope=trains",
 		"osgi.command.function=assign"})
-public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
+public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain,TrackForCommand {
 	static Logger logger = LoggerFactory.getLogger(ExampleTrackManagerImpl.class);
 	static Random random = new Random();
 
-	private Map<String, String> trains = new HashMap<String, String>();
+	private Map<String, String> rfid2Name = new HashMap<String, String>();
+	private Map<String, String> name2Rfid = new HashMap<String, String>();
 	private List<Observation> observations = new ArrayList<Observation>();
 
 	// train assignments train->segment
@@ -99,7 +101,11 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		command(c);
 	}
 
-	public void assign(String train, String segmentId){
+	public void assign(String name, String segmentId){
+		if ( !getTrains().contains(name)) {
+			throw new IllegalArgumentException("No such train " + name +". Train names are " + name2Rfid.keySet());
+		}
+			
 		SegmentHandler<Object> sh = tracks.getHandler(segmentId);
 		if(sh==null){
 			System.out.println("No valid segment id given.");
@@ -107,21 +113,15 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 			return;
 		}
 		if(!sh.isLocator()){
-			System.out.println("Only locator segments can be used for assignments.");
 			logger.error("Only locator segments can be used for assignments.");
 			return;
 		}
-		if(!getTrains().contains(train)){
-			System.out.println("Train "+train+" is not registered.");
-			logger.error("Train "+train+" is not registered.");
-			return;	
-		}
 
-		assignments.put(train, segmentId);
+		assignments.put(name, segmentId);
 		
 		Observation o = new Observation();
 		o.type = Observation.Type.ASSIGNMENT;
-		o.train = train;
+		o.train = name;
 		o.assignment = segmentId;
 		observation(o);
 	}
@@ -133,7 +133,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 
 	@Override
 	public List<String> getTrains() {
-		return new ArrayList<String>(trains.values());
+		return new ArrayList<String>(rfid2Name.values());
 	}
 
 	@Override
@@ -301,17 +301,18 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 	@Override
 	public void registerTrain(String name, String rfid) {
 		logger.info("Train " + name + " with rfid "+rfid+ " registered");
-		trains.put(rfid, name);
+		rfid2Name.put(rfid, name);
+		name2Rfid.put(name,rfid);
 	}
 
 	@Override
 	public void locatedTrainAt(String rfid, String segment) {
-		String train = trains.get(rfid);
+		String train = rfid2Name.get(rfid);
 		if ( train == null)
 			throw new IllegalArgumentException("Unknown train for rfid " + rfid);
 
 		Locator handler = tracks.getHandler(Locator.class, segment);
-		handler.locatedAt(train);
+		handler.locatedAt(rfid);
 		
 		releasePreviousTrack(train, tracks.getHandler(segment).getTrack());
 	}
@@ -380,5 +381,9 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain {
 		o.segment = segment;
 		o.blocked = b;
 		observation(o);
+	}
+
+	public String getNameForRfid(String rfid) {
+		return rfid2Name.get(rfid);
 	}
 }

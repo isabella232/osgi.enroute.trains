@@ -4,6 +4,9 @@ import java.io.Closeable;
 
 import org.osgi.framework.BundleContext;
 
+import osgi.enroute.trains.cloud.api.Segment;
+import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
+
 public interface Traverse extends Closeable {
 	Traverse next(String rfid);
 
@@ -15,5 +18,10 @@ public interface Traverse extends Closeable {
 
 	default boolean isBlocked() {
 		return false;
+	}
+
+	default Segment getSegment() {
+		SegmentHandler<?> sh = (SegmentHandler<?>)this;
+		return sh.segment;
 	}
 }

@@ -32,7 +32,7 @@ public class ExampleTrainManagerImpl {
 	private TrackForTrain trackManager;
 	private TrainController train;
 	private String name;
-	
+	private String rfid;	
 	private Tracks<Object> tracks;
 	
 	private volatile boolean active = false;
@@ -41,9 +41,10 @@ public class ExampleTrainManagerImpl {
 	@Activate
 	public void activate(TrainConfiguration config) throws Exception {
 		name = config.name();
+		rfid = config.rfid();
 		
 		// register train with Track Manager
-		trackManager.registerTrain(name, config.rfid());
+		trackManager.registerTrain(name, rfid);
 		// create Track
 		tracks = new Tracks<Object>(trackManager.getSegments().values(), new TrainManagerFactory());
 
@@ -99,7 +100,7 @@ public class ExampleTrainManagerImpl {
 					
 					tracks.event(o);
 					
-					if(!name.equals(o.train)){
+					if(name == null || !name.equals(o.train)){
 						continue;
 					}
 					
@@ -107,7 +108,7 @@ public class ExampleTrainManagerImpl {
 					case ASSIGNMENT:
 						currentAssignment = o.assignment;
 						// new assignment, plan and follow the route
-						logger.info(name+ " gets new assignment "+o.assignment);
+						logger.info(name+"/"+rfid+ " gets new assignment "+o.assignment);
 						planRoute();
 						followRoute();
 						break;
@@ -188,7 +189,7 @@ public class ExampleTrainManagerImpl {
 				// simply keep on trying until access is given
 				while(!access && active){
 					logger.info(name+" requests access from track "+fromTrack+" to "+toTrack);
-					access = trackManager.requestAccessTo(name, fromTrack, toTrack);
+					access = trackManager.requestAccessTo(rfid, fromTrack, toTrack);
 				}
 			} 
 			

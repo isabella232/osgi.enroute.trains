@@ -24,7 +24,7 @@ import osgi.enroute.trains.track.util.Tracks.SwitchHandler;
 public class EmulatorFactory extends SegmentFactoryAdapter<Traverse> {
 	final TrackForSegment owner;
 
-	class Block extends SegmentHandler<Traverse>implements Traverse {
+	class Block extends SegmentHandler<Traverse> implements Traverse {
 
 		public Block(Segment segment) {
 			super(segment);

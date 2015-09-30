@@ -3,6 +3,7 @@ package osgi.enroute.trains.track.manager.example.provider;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import org.osgi.service.component.annotations.Activate;
@@ -61,6 +63,7 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain,T
 	private Map<String, String> access = new HashMap<String, String>();
 	// blocked segments
 	private Set<String> blocked = new HashSet<String>();
+	private volatile boolean quit = false;
 	
 	static final int TIMEOUT = 60000;
 
@@ -84,6 +87,12 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain,T
 	@Deactivate
 	void deactivate( ) throws IOException {
 		ticker.close();
+		quit = true;
+		
+		synchronized(observations) {
+			observations.notifyAll();
+		}
+		
 	}
 	
 	private void setSignal(String segmentId, Color color) {
@@ -153,12 +162,20 @@ public class ExampleTrackManagerImpl implements TrackForSegment, TrackForTrain,T
 
 	@Override
 	public List<Observation> getRecentObservations(long sinceId) {
+		if ( quit )
+			throw new IllegalStateException("No longer running");
+			
 		List<Observation> o = new ArrayList<Observation>();
 		synchronized(observations){
 			while(sinceId+1 >= observations.size()){
 				try {
 					observations.wait(60000);
+					if ( quit)
+						return Collections.emptyList();
+					
 				} catch (InterruptedException e) {
+					Thread.currentThread().interrupt();
+					return Collections.emptyList();
 				}
 			}	
 			if(sinceId+1 < observations.size()){

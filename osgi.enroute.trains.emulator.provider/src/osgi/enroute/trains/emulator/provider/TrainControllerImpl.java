@@ -2,6 +2,7 @@ package osgi.enroute.trains.emulator.provider;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Random;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -11,7 +12,6 @@ import osgi.enroute.trains.track.util.Tracks.SegmentHandler;
 import osgi.enroute.trains.train.api.TrainController;
 
 public class TrainControllerImpl implements TrainController {
-	private double SPEED_CONSTANT = 0.05;
 
 	private double distance;
 	private int desiredSpeed;
@@ -22,10 +22,17 @@ public class TrainControllerImpl implements TrainController {
 	private ServiceRegistration<TrainController> registration;
 	private EmulatorImpl emulatorImpl;
 	private String name;
+	private final Random random = new Random();
 
-	public TrainControllerImpl(String name, String rfid, SegmentHandler<Traverse> start, EmulatorImpl emulatorImpl) {
+	private double rfidProb;
+
+	private double playSpeed;
+
+	public TrainControllerImpl(String name, String rfid, double rfidProb, double playSpeed, SegmentHandler<Traverse> start, EmulatorImpl emulatorImpl) {
 		this.rfid = rfid;
+		this.playSpeed = playSpeed/10;
 		this.name = name;
+		this.rfidProb = rfidProb;
 		this.emulatorImpl = emulatorImpl;
 		this.current = start.get();
 	}
@@ -52,7 +59,14 @@ public class TrainControllerImpl implements TrainController {
 				lastSpeed = actualSpeed;
 			}
 
-			distance += SPEED_CONSTANT * actualSpeed;
+			String rfid = this.rfid;
+			
+			double chance = (rfidProb - actualSpeed)/100D;
+			if ( random.nextDouble() > chance ) {
+				rfid = null;
+			}
+			
+			distance += playSpeed * actualSpeed;
 
 			double l = current.l();
 			if (distance > l) {

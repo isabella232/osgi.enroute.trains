@@ -153,7 +153,7 @@ public class Tracks<T> {
 		}
 
 		protected boolean isRoot() {
-			return segment.id.equals("A00");
+			return segment.id.equals("A10");
 		}
 
 		/**
@@ -535,9 +535,9 @@ public class Tracks<T> {
 	}
 
 	public SegmentHandler<T> getRoot() {
-		SegmentHandler<T> root = getHandler("A00");
+		SegmentHandler<T> root = getHandler("A10");
 		if (root == null)
-			throw new IllegalArgumentException("No root named A00");
+			throw new IllegalArgumentException("No root named A10");
 		return root;
 	}
 

@@ -1,7 +1,9 @@
 [
 	{
 	    "service.pid":"osgi.enroute.trains.emulator",
-	    "name.rfids":[ "DemoTrain:rfid1234" ]
+	    "name.rfids":[ "DemoTrain:rfid1234" ],
+	    "rfid.probability": 500,
+	    "play.speed":0.5
 	},
 	{
 	    "service.pid":"osgi.enroute.trains.train.manager",

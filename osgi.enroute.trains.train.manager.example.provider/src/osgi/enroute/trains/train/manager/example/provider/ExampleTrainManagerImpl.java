@@ -35,7 +35,6 @@ public class ExampleTrainManagerImpl {
 	private String rfid;	
 	private Tracks<Object> tracks;
 	
-	private volatile boolean active = false;
 	private Thread mgmtThread;
 	
 	@Activate
@@ -48,16 +47,15 @@ public class ExampleTrainManagerImpl {
 		// create Track
 		tracks = new Tracks<Object>(trackManager.getSegments().values(), new TrainManagerFactory());
 
-		active = true;
 		mgmtThread = new Thread(new TrainMgmtLoop());
 		mgmtThread.start();
 	}
 	
 	@Deactivate
 	public void deactivate(){
-		active = false;
 		try {
-			mgmtThread.join();
+			mgmtThread.interrupt();
+			mgmtThread.join(5000);
 		} catch (InterruptedException e) {
 		}
 		// stop when deactivated
@@ -92,7 +90,7 @@ public class ExampleTrainManagerImpl {
 			// last observation id
 			long lastObservation = -1;
 			
-			while(active){
+			while(isActive()){
 				// mgmt loop
 				List<Observation> observations = trackManager.getRecentObservations(lastObservation);
 				for(Observation o : observations){
@@ -143,6 +141,7 @@ public class ExampleTrainManagerImpl {
 					}
 				}
 			}
+			System.out.println("Train manager exited");
 		}
 		
 		private void planRoute(){
@@ -187,7 +186,7 @@ public class ExampleTrainManagerImpl {
 				
 				boolean access = false;
 				// simply keep on trying until access is given
-				while(!access && active){
+				while(!access && isActive()){
 					logger.info(name+" requests access from track "+fromTrack+" to "+toTrack);
 					access = trackManager.requestAccessTo(rfid, fromTrack, toTrack);
 				}
@@ -195,6 +194,10 @@ public class ExampleTrainManagerImpl {
 			
 			// just go forward
 			train.move(50);
+		}
+
+		private boolean isActive() {
+			return !Thread.currentThread().isInterrupted();
 		}
 		
 		private boolean assignmentReached(){

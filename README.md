@@ -1,2 +1,2 @@
-Moved to [/osgi/osgi.iot.contest.sdk](/osgi/osgi.iot.contest.sdk)
+Moved to [osgi.iot.contest.sdk](https://github.com/osgi/osgi.iot.contest.sdk)
 
